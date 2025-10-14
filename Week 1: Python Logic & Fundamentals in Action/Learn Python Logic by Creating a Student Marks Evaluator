@@ -1,8 +1,30 @@
+#Learn Python Logic by Creating a Student Marks Evaluator.py
+
 marks=[]
+
 for i in range(5):
     mark=int(input(f"enter mark of subject "+str(i+1)+": "))
-    marks.append(int(mark))
+    
+    if 0 <= mark <= 100:
+        marks.append(mark)
+    else:
+        print("Invalid mark, please enter a mark between 0 and 100.")
+        mark = int(input(f"Re-enter mark for subject {i+1}: "))
+        
+        if 0 <= mark <= 100:
+            marks.append(mark)
+        else:
+            print("Still invalid. Mark recorded as 0.")
+            marks.append(0)
+print("Marks entered:" ,marks)
 
+'''
+enter mark of subject 1: 85
+enter mark of subject 2: 90
+enter mark of subject 3: 78
+enter mark of subject 4: 88   
+enter mark of subject 5: 92
+'''
 total=sum(marks)
 average=total/5
 print(f"average marks: {average}")
@@ -18,4 +40,4 @@ elif average>=50:
     print("Pass with E grade")
 else:
     print("Fail")
-                        
+                    
