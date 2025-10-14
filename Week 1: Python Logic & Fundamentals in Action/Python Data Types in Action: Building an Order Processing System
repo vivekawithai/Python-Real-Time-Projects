@@ -1,0 +1,21 @@
+# Step 1: Input customer details
+customer_name = input("Enter Customer Name: ")  # String
+num_items = int(input("Enter Number of Items Purchased: "))  # Integer
+total_before_tax = float(input("Enter Total Amount Before Tax: ₹"))  # Float
+
+# Step 2: Calculate tax and final price
+gst_rate = 18 / 100  # 18% GST
+tax_amount = total_before_tax * gst_rate
+total_after_tax = total_before_tax + tax_amount
+
+# Step 3: Determine free shipping eligibility
+free_shipping = total_after_tax > 1000  # Boolean
+
+# Step 4: Display order summary
+print("\n===== Order Summary =====")
+print(f"Customer Name: {customer_name}")
+print(f"Items Purchased: {num_items}")
+print(f"Total Before Tax: ₹{total_before_tax:.2f}")
+print(f"GST (18%): ₹{tax_amount:.2f}")
+print(f"Total After Tax: ₹{total_after_tax:.2f}")
+print(f"Eligible for Free Shipping: {'Yes' if free_shipping else 'No'}")
