@@ -1,0 +1,267 @@
+import tkinter as tk
+import numpy as np
+
+# Grid size
+GRID_SIZE = 5
+CELL_SIZE = 100  # Each cell is 100x100 pixels
+
+# Initial positions
+player_pos = [0, 0]  # Player starts at top-left
+random_int1 = np.random.randint(1, 5)
+random_int2 = np.random.randint(1, 5)
+enemy_pos = [random_int1, random_int2]
+goal_pos = [4, 4]    # Goal is at bottom-right
+
+# Movement directions (row, col)
+'''
+This dictionary is usually used in grid-based games or simulations (like a maze, chessboard, or snake game) 
+to represent movements in a 2D grid. Each key is a direction, and each value is a tuple that represents how coordinates 
+change when you move in that direction.
+'''
+MOVES = {
+    "Up": (-1, 0), # Row decrement as we go up ie., Move 1 row up, column stays the same
+    "Down": (1, 0), # Row increment as we go down ie., Move 1 row down, column stays the same
+    "Left": (0, -1), # Column decrement as we go left ie., Move 1 column left, row stays the same
+    "Right": (0, 1), # Column increment as we go right ie., Move 1 column right, row stays the same
+    }
+
+# Create GUI window
+root = tk.Tk()
+root.title("Grid Game: Reach the Goal!")
+
+# Canvas setup
+canvas = tk.Canvas(root, width=GRID_SIZE * CELL_SIZE, height=GRID_SIZE * CELL_SIZE, bg="white")
+canvas.pack()
+
+# Draw grid lines
+for i in range(GRID_SIZE + 1):
+    canvas.create_line(i * CELL_SIZE, 0, i * CELL_SIZE, GRID_SIZE * CELL_SIZE, fill="black")
+    canvas.create_line(0, i * CELL_SIZE, GRID_SIZE * CELL_SIZE, i * CELL_SIZE, fill="black")
+'''
+1. canvas.create_rectangle(...)
+
+This is a Tkinter method that draws a rectangle on the canvas. It takes coordinates of the top-left and bottom-right corners:
+
+canvas.create_rectangle(x1, y1, x2, y2, fill="color")
+
+
+(x1, y1) → top-left corner
+
+(x2, y2) → bottom-right corner
+
+fill → color of the rectangle
+
+2. goal_pos[1] * CELL_SIZE and goal_pos[0] * CELL_SIZE
+
+Here, goal_pos is likely a tuple (row, column) representing the goal's position on the grid.
+
+goal_pos[0] → row number
+
+goal_pos[1] → column number
+
+CELL_SIZE is the size of each grid square in pixels.
+
+So multiplying goal_pos by CELL_SIZE converts grid coordinates → pixel coordinates.
+
+3. Why (goal_pos[1] + 1) * CELL_SIZE and (goal_pos[0] + 1) * CELL_SIZE?
+
+We want the rectangle to fill one cell, not just be a point.
+
+Adding +1 moves from the top-left corner to the bottom-right corner of that cell.
+
+Example:
+
+If goal_pos = (2, 3) and CELL_SIZE = 50:
+
+Coordinate	Calculation	    Result (pixels)
+x1	        3 * 50	        150
+y1	        2 * 50	        100
+x2	        (3+1) * 50	    200
+y2	        (2+1) * 50	    150
+
+So the rectangle covers pixels (150, 100) to (200, 150) → exactly one cell.
+
+4. fill="green"
+
+The rectangle will be green, representing the “goal” visually on the grid.
+
+'''
+# Draw goal (green square)
+goal_square = canvas.create_rectangle(
+    goal_pos[1] * CELL_SIZE, goal_pos[0] * CELL_SIZE,
+    (goal_pos[1]+1) * CELL_SIZE, (goal_pos[0]+1) * CELL_SIZE,
+    fill="green")
+
+# Draw enemy (red square)
+enemy_square = canvas.create_rectangle(
+    enemy_pos[1] * CELL_SIZE, enemy_pos[0] * CELL_SIZE,
+    (enemy_pos[1] + 1) * CELL_SIZE, (enemy_pos[0] + 1) * CELL_SIZE,
+    fill="red"
+)
+
+# Draw player (blue square)
+player_square = canvas.create_rectangle(
+    player_pos[1] * CELL_SIZE, player_pos[0] * CELL_SIZE,
+    (player_pos[1] + 1) * CELL_SIZE, (player_pos[0] + 1) * CELL_SIZE,
+    fill="blue"
+)
+'''
+Let’s break this step by step and explain everything, including why `//2` is used.
+
+---
+
+### The code:
+
+```python
+def show_message(message, color):
+    canvas.create_text(
+        GRID_SIZE * CELL_SIZE // 2, GRID_SIZE * CELL_SIZE // 2,
+        text=message, font=("Arial", 24, "bold"), fill=color
+    )
+    root.unbind("<KeyPress>")  # Stop player movement
+    root.after_cancel(enemy_movement)  # Stop enemy movement
+```
+
+---
+
+### 1. **Purpose of the function**
+
+`show_message` is a **helper function to display a message on the canvas** (like “Game Over” or “You Win”) and then **stop the game** by preventing further movement.
+
+---
+
+### 2. **`canvas.create_text(...)`**
+
+This draws text on the canvas. Its parameters:
+
+```python
+canvas.create_text(x, y, text=message, font=("Arial", 24, "bold"), fill=color)
+```
+
+* `x` → horizontal position (in pixels)
+* `y` → vertical position (in pixels)
+* `text` → the message to show
+* `font` → font style, size, weight
+* `fill` → text color
+
+---
+
+### 3. **`GRID_SIZE * CELL_SIZE // 2`**
+
+Here’s why `//2` is used:
+
+* `GRID_SIZE * CELL_SIZE` → **total width or height of the canvas in pixels**
+
+  * `GRID_SIZE` = number of cells in the grid
+  * `CELL_SIZE` = size of one cell in pixels
+  * Example: 10 cells × 50 pixels = 500 pixels
+
+* `// 2` → **integer division by 2** to find the **center of the canvas**
+
+  * `500 // 2 = 250` → place text at pixel 250
+  * `//` ensures it’s an **integer**, because Tkinter expects pixel positions as integers
+
+✅ So this centers the text in the middle of the canvas.
+
+---
+
+### 4. **`root.unbind("<KeyPress>")`**
+
+* This **disables all key press events**, stopping the player from moving after the game ends.
+
+---
+
+### 5. **`root.after_cancel(enemy_movement)`**
+
+* `enemy_movement` is likely a **scheduled repeating function** (like `root.after(1000, move_enemy)`), moving the enemy automatically.
+* `after_cancel` **stops that scheduled movement**, effectively freezing the game.
+
+---
+
+### ✅ Summary
+
+* `canvas.create_text(... // 2, ... // 2)` → Draws the message **in the center of the canvas**.
+* `root.unbind("<KeyPress>")` → Stops player control.
+* `root.after_cancel(enemy_movement)` → Stops enemy movement.
+
+'''
+# Function to display message and stop game
+def show_message(message, color):
+    canvas.create_text(
+        GRID_SIZE * CELL_SIZE // 2, GRID_SIZE * CELL_SIZE // 2,
+        text=message, font=("Arial", 24, "bold"), fill=color
+    )
+    root.unbind("<KeyPress>")  # Stop player movement
+    root.after_cancel(enemy_movement)  # Stop enemy movement
+
+# Function to move enemy randomly and automatically
+def move_enemy():
+    global enemy_pos, enemy_movement
+
+    if player_pos == enemy_pos:  # If enemy catches player
+        show_message("Game Over!", "red")
+        return
+
+    # Choose a random move
+    move = np.random.choice(list(MOVES.keys()))
+    new_pos = [enemy_pos[0] + MOVES[move][0], enemy_pos[1] + MOVES[move][1]]
+    
+
+    # Keep enemy inside the grid
+    enemy_pos[0] = np.clip(new_pos[0], 0, GRID_SIZE - 1)
+    enemy_pos[1] = np.clip(new_pos[1], 0, GRID_SIZE - 1)
+
+    # Update enemy position on canvas
+    canvas.coords(
+        enemy_square,
+        enemy_pos[1] * CELL_SIZE, enemy_pos[0] * CELL_SIZE,
+        (enemy_pos[1] + 1) * CELL_SIZE, (enemy_pos[0] + 1) * CELL_SIZE
+    )
+
+    # Check for collision with player
+    if player_pos == enemy_pos:
+        show_message("Game Over!", "red")
+    else:
+        enemy_movement = root.after(500, move_enemy)  # Move enemy every 500ms
+
+# Move player with arrow keys
+def move_player(event):
+    global player_pos
+
+    move = None
+    if event.keysym == "Up":
+        move = "Up"
+    elif event.keysym == "Down":
+        move = "Down"
+    elif event.keysym == "Left":
+        move = "Left"
+    elif event.keysym == "Right":
+        move = "Right"
+
+    if move:
+        new_pos = [player_pos[0] + MOVES[move][0], player_pos[1] + MOVES[move][1]]
+
+        if 0 <= new_pos[0] < GRID_SIZE and 0 <= new_pos[1] < GRID_SIZE:
+            player_pos[:] = new_pos
+            canvas.coords(
+                player_square,
+                player_pos[1] * CELL_SIZE, player_pos[0] * CELL_SIZE,
+                (player_pos[1] + 1) * CELL_SIZE, (player_pos[0] + 1) * CELL_SIZE
+            )
+
+        # Check for win condition
+        if player_pos == goal_pos:
+            show_message("You Win!", "green")
+
+        # Check for collision with enemy
+        elif player_pos == enemy_pos:
+            show_message("Game Over!", "red")
+
+# Bind keyboard input for player movement
+root.bind("<KeyPress>", move_player)
+
+# Start automatic enemy movement
+enemy_movement = root.after(500, move_enemy)
+
+# Run the GUI
+root.mainloop()
