@@ -3,8 +3,11 @@
 **Plan**
 
 **“Don’t just learn Python experience Python in action!”**
-💡 **Why Real-Time Python Projects Matter for Job Seekers**
+
+💡**Why Real-Time Python Projects Matter for Job Seekers**
+
 Most job seekers know Python basics variables, loops, functions, and data types but where many struggle is applying them in real-world scenarios. Recruiters don’t just look for syntax knowledge; they look for problem-solving skills, logical thinking, and the ability to translate ideas into automation or analysis.
+
 That’s where these CareerByteCode Real-Time Python Projects make the difference:
 
 ✅ From Learning to Doing – You’ll move from just watching tutorials to building usable tools and mini-apps.
