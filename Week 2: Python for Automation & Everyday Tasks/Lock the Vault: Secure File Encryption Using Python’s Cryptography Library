@@ -1,0 +1,99 @@
+'''
+Step-by-Step Implementation Instructions
+
+A simple and secure Python script using the cryptography library to encrypt and decrypt files. This script will:
+
+Generate a key.
+
+Save/load the key.
+
+Encrypt a file.
+
+Decrypt a file.
+
+Required Library
+First, install the cryptography package (if not already installed):
+
+pip install cryptography
+'''
+
+#Python Script: Encrypt & Decrypt Files
+
+from cryptography.fernet import Fernet
+import os
+
+# ----------- KEY MANAGEMENT -----------
+
+# Generate and save key to a file
+def generate_key(key_path='secret.key'):
+    key = Fernet.generate_key()
+    with open(key_path, 'wb') as key_file:
+        key_file.write(key)
+
+# Load the key from a file
+def load_key(key_path='secret.key'):
+    return open(key_path, 'rb').read()
+
+# ----------- ENCRYPTION -----------
+
+def encrypt_file(file_path, key):
+    fernet = Fernet(key)
+
+    with open(file_path, 'rb') as file:
+        original_data = file.read()
+
+    encrypted_data = fernet.encrypt(original_data)
+
+    with open(file_path + '.enc', 'wb') as enc_file:
+        enc_file.write(encrypted_data)
+
+    print(f"File encrypted successfully: {file_path}.enc")
+
+# ----------- DECRYPTION -----------
+
+def decrypt_file(encrypted_path, key, output_path=None):
+    fernet = Fernet(key)
+
+    with open(encrypted_path, 'rb') as enc_file:
+        encrypted_data = enc_file.read()
+
+    decrypted_data = fernet.decrypt(encrypted_data)
+
+    if not output_path:
+        output_path = encrypted_path.replace('.enc', '.dec')
+
+    with open(output_path, 'wb') as dec_file:
+        dec_file.write(decrypted_data)
+
+    print(f"File decrypted successfully: {output_path}")
+
+# ----------- USAGE EXAMPLE -----------
+
+if __name__ == '__main__':
+    # Step 1: Generate key (do it once and reuse later)
+    if not os.path.exists('secret.key'):
+        generate_key()
+
+    # Step 2: Load key
+    key = load_key()
+
+    # Step 3: Encrypt a file
+    encrypt_file('example.txt', key)
+
+    # Step 4: Decrypt a file
+    decrypt_file('example.txt.enc', key)
+
+
+'''
+Replace example.txt with your file path.
+
+The script uses the cryptography library’s Fernet module for secure symmetric encryption.
+
+It generates a key once and stores it in a secret.key file.
+
+The encrypt_file() function reads a file, encrypts its contents, and saves it with a .enc extension.
+
+The decrypt_file() function reads the encrypted file, decrypts it using the key, and writes the original content back.
+'''
+
+This helps protect sensitive files by allowing easy encryption and decryption with the same key.''
