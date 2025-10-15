@@ -1,0 +1,99 @@
+''
+Step-by-Step Implementation Instructions
+
+This script automates resizing multiple images in a folder to a fixed width and height using the Pillow (PIL) library in Python.
+'''
+
+**Step 1: Import Necessary Modules**
+
+from PIL import Image
+import os
+
+**Step 2: Define the resize_images() Function**
+
+def resize_images(input_folder, output_folder, width, height):
+
+This function takes four parameters:
+
+input_folder: Path of the folder containing original images.
+
+output_folder: Path of the folder where resized images will be saved.
+
+width: Desired width of the resized images.
+
+height: Desired height of the resized images.
+
+**Step 3: Create Output Folder if It Doesn’t Exist**
+
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+Checks if the output folder exists.
+
+If not, it creates the output folder.
+
+**Step 4: Loop Through All Images in the Input Folder**
+
+    for filename in os.listdir(input_folder):
+os.listdir(input_folder) gets all file names in the input_folder.
+
+The for loop iterates over each file.
+
+**Step 5: Check If the File is an Image**
+
+        if filename.lower().endswith(('png', 'jpg', 'jpeg', 'bmp', 'gif')):
+This ensures that only image files (PNG, JPG, JPEG, BMP, GIF) are processed.
+
+lower() ensures case insensitivity (e.g., JPG and jpg are treated the same).
+
+**Step 6: Open the Image File**
+
+            img_path = os.path.join(input_folder, filename)
+            img = Image.open(img_path)
+os.path.join(input_folder, filename): Combines folder path and filename to get the full path of the image.
+
+Image.open(img_path): Opens the image.
+
+**Step 7: Resize the Image**
+
+            img_resized = img.resize((width, height), Image.LANCZOS)
+resize((width, height), Image.LANCZOS):
+
+Resizes the image to the specified width and height.
+
+Uses Image.LANCZOS for high-quality resizing. (Earlier, Image.ANTIALIAS was used, but it was removed in Pillow 10.0.)
+
+**Step 8: Save the Resized Image**
+
+            output_path = os.path.join(output_folder, filename)
+            img_resized.save(output_path)
+            print(f'Resized {filename} and saved to {output_path}')
+
+**Step 9: Call the Function with Example Parameters**
+
+input_folder = 'input_images'  # Folder containing original images
+output_folder = 'output_images'  # Folder to save resized images
+width, height = 800, 800  # Set required width and height
+
+resize_images(input_folder, output_folder, width, height)
+
+-Defines the input and output folder paths.
+
+-Sets the desired image dimensions (800x800 pixels).
+
+-Calls the resize_images() function to start processing the images.
+
+**How to Use the Script?**
+
+Install Pillow (if not installed):
+
+pip install pillow
+
+'''
+Create a folder named input_images and add some images inside it.
+
+Run the script.
+
+Resized images will be saved in a new folder named output_images.
+'''
+Check the output_images folder for resized images.
