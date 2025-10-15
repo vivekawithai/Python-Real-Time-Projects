@@ -42,7 +42,7 @@ That’s where these Real-Time Python Projects make the difference:
 
 ✅ Highlight real-world use cases recruiters love to see “Python solving real problems.”
 
-✅ Connect your CareerByteCode projects in your LinkedIn “Projects” section with links to Substack posts.
+✅ Connect your projects in your LinkedIn “Projects” section with links to Substack posts.
 
 **🎯 Final Message**
 By the end of this plan, you’ll not only understand Python syntax you’ll know how to use it to solve business, automation, and data challenges like a pro.
